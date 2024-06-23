@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>山西高速ETC大数据中心</title>
+    <script src="./assets/js/axios.min.js"></script>
+    <script src="./assets/js/vue.min.js"></script>
+    <script src="./assets/js/moment.min.js"></script>
+    <script src="./assets/js/echarts.min.js"></script>
+    <script src="./assets/js/xlsx.core.min.js"></script>
+    <script src="./assets/data.js"></script>
+    <!-- <script type="text/javascript" src="./assets/data.json"></script> -->
+    <link href="./assets/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="header">
+            <img src="./assets/img/bg.png" alt="" srcset="">
+            <span class="title">山西高速ETC大数据中心</span>
+            <span class="day"><img src="./assets/img/time.png" style="height: 18px;width:18px;margin-right: 4px;"
+                    alt=""> {{day}}</span>
+        </div>
+        <div class="content">
+            <div class="left_x">
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日ETC新增车辆数</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="item_h">
+                                <span class="number">{{ ETC_echart_Data.new_bus_num }}</span>
+                                <span class="name">客车</span>
+                            </div>
+                            <div class="item_h">
+                                <span class="number number2">{{ETC_echart_Data.new_truck_num }}</span>
+                                <span class="name">货车</span>
+                            </div>
+                            <div class="item_h">
+                                <span
+                                    class="number number3">{{Number(ETC_echart_Data.new_bus_num)+Number(ETC_echart_Data.new_truck_num)}}</span>
+                                <span class="name">总计</span>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart1" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日ETC行业记账卡办理情况TOP</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="item_h item_h_right" v-for="(item,index) in zrjzkList" :key="index">
+                                <span class="number"
+                                    :style="{color: item.color||'#92DAFF'}">{{item.newAcount_num}}</span>
+                                <span class="name">{{item.networkName}}</span>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart9" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日晋保通办理情况TOP</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="item_h item_h_right" v-for="(item,index) in zrjbtList"
+                                :key="index">
+                                <span class="number" :style="{color: item.color||'#92DAFF'}">{{item.newJBT_num}}</span>
+                                <span class="name">{{item.networkName}}</span>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart10" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="middle_x">
+                <div class="middle_x_one">
+                    <div class="middle_xxlx">
+                        <span class="span1"></span>
+                        <span class="span2"></span>
+                        <span class="span3"></span>
+                        <span class="span4"></span>
+                        <div class="middle_xxlx_h">
+                            <div class="titlex">昨日通行总金额(万元)</div>
+                            <div class="numberx">
+                                <span class="number_left">{{ETC_echart_Data.ct_fee}}</span>
+                                <span class="number_right">{{ETC_echart_Data.ct_num}}万笔</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="middle_xxlx">
+                        <span class="span1"></span>
+                        <span class="span2"></span>
+                        <span class="span3"></span>
+                        <span class="span4"></span>
+                        <div class="middle_xxlx_h">
+                            <div class="titlex">昨日通行车辆总数(万)</div>
+                            <div class="numberx">
+                                <span class="number_left number_left2">{{ETC_echart_Data.ct_num}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="middle_xxlx">
+                        <span class="span1"></span>
+                        <span class="span2"></span>
+                        <span class="span3"></span>
+                        <span class="span4"></span>
+                        <div class="middle_xxlx_h">
+                            <div class="titlex">昨日货车通行车辆数(万)</div>
+                            <div class="numberx">
+                                <span class="number_left number_left3">{{ETC_echart_Data.ct_truck_num}}</span>
+                                <!-- <span class="number_left number_left3">{{paramData.centerData.zrhctxcls.money}}</span>
+                                <span class="number_right number_right2">{{paramData.centerData.zrhctxcls.num}}万笔</span> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="middle_xxlx">
+                        <span class="span1"></span>
+                        <span class="span2"></span>
+                        <span class="span3"></span>
+                        <span class="span4"></span>
+                        <div class="middle_xxlx_h">
+                            <div class="titlex">昨日客车通行车辆数(万)</div>
+                            <div class="numberx">
+                                <span class="number_left number_left4">{{ETC_echart_Data.ct_bus_num}}</span>
+                                <!-- <span class="number_left number_left4">{{paramData.centerData.zrkcje.money}}</span>
+                                <span class="number_right number_right3">{{paramData.centerData.zrkcje.num}}万笔</span> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="frame middle_x_two">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">一周内通行总额趋势（万元）</div>
+                        </div>
+                        <div id="myChart" ref="echart4" style="width: 100%;height:150px;"></div>
+                    </div>
+                </div>
+                <div class="frame middle_x_two">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">一周内通行车辆总数分布（万辆）</div>
+                        </div>
+                        <div id="myChart" ref="echart5" style="width: 100%;height:150px;"></div>
+                    </div>
+                </div>
+                <div class="frame middle_x_two">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">一周内货车客车通行数分布（万辆）</div>
+                        </div>
+                        <div id="myChart" ref="echart6" style="width: 100%;height:150px;"></div>
+                    </div>
+                </div>
+                <!--  style="height: 215px;" -->
+                <div class="frame middle_x_two">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">一周内货车客车通行费分布（万元）</div>
+                        </div>
+                        <div id="myChart" ref="echart7" style="width: 100%;height:150px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="left_x">
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日ETC交易分布</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="middle_xxlx_h middle_xxlx_right">
+                                <div class="numberx">
+                                    <span class="number_left number_left5">{{ETC_echart_Data.ct_clarBs_fee}}</span>
+                                    <span
+                                        class="number_right number_rightxx">{{ETC_echart_Data.ct_clarWs_fee?((ETC_echart_Data.ct_clarBs_fee/(Number(ETC_echart_Data.ct_clarBs_fee)+Number(ETC_echart_Data.ct_clarWs_fee)))*100).toFixed(2):100}}%</span>
+                                </div>
+                                <div class="titlex">省内（万元）</div>
+                            </div>
+                            <div class="middle_xxlx_h middle_xxlx_right" v-if="ETC_echart_Data.ct_clarWs_fee">
+                                <div class="numberx">
+                                    <span class="number_left number_left3">{{ETC_echart_Data.ct_clarWs_fee}}</span>
+                                    <span
+                                        class="number_right number_rightxx">{{(100-((ETC_echart_Data.ct_clarBs_fee/(Number(ETC_echart_Data.ct_clarBs_fee)+Number(ETC_echart_Data.ct_clarWs_fee)))*100).toFixed(2)).toFixed(2)}}%</span>
+                                </div>
+                                <div class="titlex">省外（万元）</div>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart8" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日ETC通行金额（万元）</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="item_h">
+                                <span class="number">{{ETC_echart_Data.ct_bus_fee}}</span>
+                                <span class="name">客车</span>
+                            </div>
+                            <div class="item_h">
+                                <span class="number number2">{{ETC_echart_Data.ct_truck_fee}}</span>
+                                <span class="name">货车</span>
+                            </div>
+                            <div class="item_h">
+                                <span
+                                    class="number number3">{{(Number(ETC_echart_Data.ct_bus_fee)+Number(ETC_echart_Data.ct_truck_fee)).toFixed(2)}}</span>
+                                <span class="name">总计</span>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart2" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <span class="span1"></span>
+                    <span class="span2"></span>
+                    <span class="span3"></span>
+                    <span class="span4"></span>
+                    <div class="one_left">
+                        <div class="titless">
+                            <div class="line">
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                                <div class="lin-s"></div>
+                            </div>
+                            <div class="subtitle_day">昨日预收通行费情况（万元）</div>
+                        </div>
+                        <div class="list_h">
+                            <div class="item_h">
+                                <span class="number number4">{{ETC_echart_Data.ct_prepay_bus_fee}}</span>
+                                <span class="name">客车</span>
+                            </div>
+                            <div class="item_h">
+                                <span class="number number5">{{ETC_echart_Data.ct_prepay_truck_fee||0}}</span>
+                                <span class="name">货车</span>
+                            </div>
+                            <div class="item_h">
+                                <span
+                                    class="number number6">{{(Number(ETC_echart_Data.ct_prepay_bus_fee)+Number(ETC_echart_Data.ct_prepay_truck_fee||0)).toFixed(2)}}</span>
+                                <span class="name">总计</span>
+                            </div>
+                        </div>
+                        <div id="myChart" ref="echart3" style="width: 100%;height:170px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- 页面逻辑 -->
+<script src="./assets/js/main.js"></script>
+
+</html>
